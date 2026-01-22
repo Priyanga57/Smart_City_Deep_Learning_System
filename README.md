@@ -39,16 +39,18 @@
 
 
 
-## **Module 1: Traffic Object Detection (YOLO)** ##
 
-# Objective #
+
+# **Module 1: Traffic Object Detection (YOLO)** #
+
+## Objective ##
 
 To detect and classify vehicles in traffic images and estimate congestion levels in real time.
-# Dataset #
+## Dataset ##
 
 Vehicle detection dataset (YOLO format)
 
-# Classes: # 
+## Classes: ##
    
   --> car 
 
@@ -63,7 +65,7 @@ Vehicle detection dataset (YOLO format)
   --> microbus
   
 
-# Steps Performed #
+## Steps Performed ##
 
 ---> Dataset inspection and folder structuring (train, valid, labels)
 
@@ -81,7 +83,7 @@ Vehicle detection dataset (YOLO format)
 
 
 
-# Output #
+## Output ##
 
 ---> Trained YOLO model
 
@@ -90,20 +92,24 @@ Vehicle detection dataset (YOLO format)
 ---> Congestion level estimation (Low / Medium / High)
 
 
-## **Module 2: Complaint Classification (BiLSTM)** ##
 
-# Objective #
+
+
+# **Module 2: Complaint Classification (BiLSTM)** #
+
+
+## Objective ##
 
   To automatically classify citizen complaints into predefined categories using NLP.
 
-# Dataset #
+## Dataset ##
 
 Consumer Complaints Dataset
 
 Text-based complaints with labeled product categories
 
 
-# Steps Performed #
+## Steps Performed ##
 
 --> Data cleaning (null removal, duplicates, text normalization)
 
@@ -122,11 +128,11 @@ Text-based complaints with labeled product categories
 --> Saving trained model and preprocessing objects
 
 
-# Output #
+## Output ##
 
 Complaint category prediction from free-text input
 
-# Saved files: #
+## Saved files: ##
 
 complaint_bilstm_model.h5
 
@@ -136,17 +142,17 @@ label_encoder.pkl
 
 
 
-## **Module 3: Energy Consumption Forecasting (LSTM)** ##
+# **Module 3: Energy Consumption Forecasting (LSTM)** #
 
-# Objective #
+## Objective ##
 
 To forecast future energy consumption trends based on historical power usage data.
 
-# Dataset #
+## Dataset ##
 
 Household Electric Power Consumption Dataset
 
-# Steps Performed #
+## Steps Performed ##
 
 --> Data preprocessing and resampling (hourly)
 
@@ -163,7 +169,7 @@ Household Electric Power Consumption Dataset
 --> Exporting forecast results for visualization
 
 
-# Output #
+## Output ##
 
 --> Trained energy forecasting model
 
@@ -177,25 +183,25 @@ Household Electric Power Consumption Dataset
    
 
 
-## **Integration of All Modules** ##
+# **Integration of All Modules** #
 
---> All three modules are integrated into a single Streamlit dashboard:
+---> All three modules are integrated into a single Streamlit dashboard:
 
-  --> Traffic Module → Live YOLO inference on uploaded images
+   --> Traffic Module → Live YOLO inference on uploaded images
   
-  --> Complaint Module → Real-time text classification
+   --> Complaint Module → Real-time text classification
 
-  --> Energy Module → Visualization of actual vs predicted energy usage
+   --> Energy Module → Visualization of actual vs predicted energy usage
 
-  --> Each model is isolated from UI logic using utility scripts for maintainability.
+   --> Each model is isolated from UI logic using utility scripts for maintainability.
 
   
 
-## **Dashboard Deployment (Streamlit)** ##
+# **Dashboard Deployment (Streamlit)** #
 
 
 
-## **Project Structure** ##
+# **Project Structure** #
 
 
 
@@ -237,10 +243,10 @@ Smart_City_Deep_Learning_System/
 
 
 
-## **Deployment via GitHub & Streamlit** ##
+# **Deployment via GitHub & Streamlit** #
 
 
-# Steps #
+## Steps ##
 
 
 --> Push project to GitHub repository
@@ -254,11 +260,11 @@ Smart_City_Deep_Learning_System/
 --> Deploy dashboard online
 
 
-# Result #
+## Result ##
 
 A fully functional web-based Smart City AI dashboard accessible through a browser.
 
-# Technologies Used #
+## Technologies Used ##
 
 --> Python
 
@@ -278,7 +284,7 @@ A fully functional web-based Smart City AI dashboard accessible through a browse
 
 
 
-# Key Learning Outcomes #
+## Key Learning Outcomes ##
 
   --> End-to-end deep learning pipeline development
   
@@ -292,6 +298,6 @@ A fully functional web-based Smart City AI dashboard accessible through a browse
   
 
  
- # Conclusion #
+ ## Conclusion ##
 
   This project demonstrates how AI-driven analytics can support smart city planning by combining vision, language, and time-series intelligence into a single scalable system.
