@@ -1,8 +1,11 @@
 streamlit
 ultralytics
 tensorflow
-scikit-learn
-pandas
+keras
 numpy
+pandas
 matplotlib
-opencv-python
+opencv-python-headless
+scikit-learn
+pickle-mixin
+Pillow
