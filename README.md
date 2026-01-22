@@ -19,9 +19,13 @@
 ##  **Project Modules** ##
 
 **Module 1:**  Traffic Object Detection using YOLO
+
 **Module 2:**  Complaint Classification using LSTM / BiLSTM
+
 **Module 3:**  Energy Consumption Forecasting using LSTM
+
 **Integration & Deployment: Streamlit Dashboard**
+
 
 
 ## **Module 1: Traffic Object Detection (YOLO)** ##
@@ -134,25 +138,41 @@ Household Electric Power Consumption Dataset
 
 
 Smart_City_Deep_Learning_System/
+
 │
 ├── app.py
+|
 ├── requirements.txt
+|
 │
 ├── models/
+|
 │   ├── yolov8_best.pt
+|
 │   ├── complaint_bilstm_model.h5
+|
 │   ├── tokenizer.pkl
+|
 │   ├── label_encoder.pkl
+|
 │   └── energy_lstm_model.h5
+|
 │
 ├── utils/
+|
 │   ├── traffic.py
+|
 │   └── complaints.py
+|
 │
 ├── sample_data/
+|
 │   └── energy_sample.csv
+|
 │
 └── README.md
+|
+
 
 
 ## **Deployment via GitHub & Streamlit** ##
