@@ -1,38 +1,50 @@
 import os
+import cv2
 from ultralytics import YOLO
+from collections import Counter
+import tempfile
 
-# Get absolute path to project root (smart_city_dashboard)
+# --------------------------------------------------
+# Resolve absolute path to model
+# --------------------------------------------------
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 MODEL_PATH = os.path.join(BASE_DIR, "models", "yolov8_best.pt")
 
 if not os.path.exists(MODEL_PATH):
-    raise FileNotFoundError(
-        f"YOLO model not found at {MODEL_PATH}"
-    )
+    raise FileNotFoundError(f"YOLO model not found at {MODEL_PATH}")
 
-# Load YOLO on CPU (Streamlit Cloud safe)
 model = YOLO(MODEL_PATH)
-model.to("cpu")
 
-VEHICLE_CLASSES = ["car", "bus", "truck", "motorbike", "pickup-van", "microbus"]
-
+# --------------------------------------------------
+# Traffic Detection Function
+# --------------------------------------------------
 def detect_traffic(image_path):
-    results = model(image_path, device="cpu")[0]
+    # Force correct extension for YOLO
+    temp_img = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
+    img = cv2.imread(image_path)
+    cv2.imwrite(temp_img.name, img)
 
-    counts = {v: 0 for v in VEHICLE_CLASSES}
+    results = model.predict(
+        source=temp_img.name,
+        conf=0.4,
+        device="cpu"
+    )[0]
 
+    counts = Counter()
     for box in results.boxes:
-        label = results.names[int(box.cls[0])]
-        if label in counts:
-            counts[label] += 1
+        cls = int(box.cls[0])
+        label = model.names[cls]
+        counts[label] += 1
 
     total = sum(counts.values())
 
-    congestion = (
-        "High" if total > 50 else
-        "Medium" if total > 20 else
-        "Low"
-    )
+    if total > 25:
+        congestion = "High"
+    elif total > 10:
+        congestion = "Medium"
+    else:
+        congestion = "Low"
 
-    return counts, total, congestion, results.plot()
+    annotated = results.plot()
+
+    return dict(counts), total, congestion, annotated
