@@ -18,39 +18,36 @@ st.set_page_config(
 )
 
 # ==================================================
-# Resolve Base Paths (Cloud Safe)
+# Resolve Base Paths (Streamlit Cloud Safe)
 # ==================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 DATA_DIR = os.path.join(BASE_DIR, "sample_data")
 
 # ==================================================
-# Header Section
+# Custom Styling
 # ==================================================
 st.markdown(
     """
     <style>
-        .main-title {
-            font-size: 42px;
+        .title {
+            font-size: 40px;
             font-weight: 800;
-            color: #2E86C1;
+            color: #1F618D;
         }
         .subtitle {
             font-size: 18px;
             color: #555;
-        }
-        .metric-box {
-            background-color: #F4F6F6;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="main-title">🏙️ Smart City Deep Learning Dashboard</div>', unsafe_allow_html=True)
+# ==================================================
+# Header
+# ==================================================
+st.markdown('<div class="title">🏙️ Smart City Deep Learning Dashboard</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="subtitle">AI-powered Traffic Monitoring, Complaint Classification & Energy Forecasting</div>',
     unsafe_allow_html=True
@@ -59,7 +56,7 @@ st.markdown(
 st.markdown("---")
 
 # ==================================================
-# Sidebar – System Health Check
+# Sidebar – System Status
 # ==================================================
 st.sidebar.header("📂 System Status")
 
@@ -69,7 +66,7 @@ try:
     st.sidebar.success("Data Available")
     st.sidebar.write(os.listdir(DATA_DIR))
 except Exception as e:
-    st.sidebar.error("System files missing")
+    st.sidebar.error("Required files missing")
     st.sidebar.exception(e)
     st.stop()
 
@@ -77,7 +74,7 @@ st.sidebar.markdown("---")
 st.sidebar.info(
     """
     **Smart City Modules**
-    - 🚦 Traffic Monitoring (YOLO)
+    - 🚦 Traffic Object Detection (YOLO)
     - 📝 Complaint Classification (BiLSTM)
     - ⚡ Energy Forecasting (LSTM)
     """
@@ -86,7 +83,7 @@ st.sidebar.info(
 # ==================================================
 # Tabs
 # ==================================================
-tabs = st.tabs([
+tab1, tab2, tab3 = st.tabs([
     "🚦 Traffic Monitoring",
     "📝 Complaint Classification",
     "⚡ Energy Forecasting"
@@ -95,20 +92,20 @@ tabs = st.tabs([
 # ==================================================
 # 🚦 MODULE 1: TRAFFIC MONITORING
 # ==================================================
-with tabs[0]:
+with tab1:
     st.subheader("🚦 Real-Time Traffic Object Detection")
 
     uploaded_image = st.file_uploader(
         "Upload a traffic image",
-        type=["jpg", "png", "jpeg"]
+        type=["jpg", "jpeg", "png"]
     )
 
     if uploaded_image:
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            tmp.write(uploaded_image.read())
-            image_path = tmp.name
-
         try:
+            with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
+                tmp.write(uploaded_image.read())
+                image_path = tmp.name
+
             counts, total, congestion, annotated_img = detect_traffic(image_path)
 
             st.image(
@@ -118,7 +115,6 @@ with tabs[0]:
             )
 
             c1, c2, c3, c4 = st.columns(4)
-
             c1.metric("🚗 Cars", counts.get("car", 0))
             c2.metric("🚌 Buses", counts.get("bus", 0))
             c3.metric("🚚 Trucks", counts.get("truck", 0))
@@ -127,7 +123,7 @@ with tabs[0]:
             st.metric("🚦 Total Vehicles", total)
 
             if congestion == "High":
-                st.error("🚨 HIGH CONGESTION DETECTED")
+                st.error("🚨 HIGH TRAFFIC CONGESTION")
             elif congestion == "Medium":
                 st.warning("⚠️ MODERATE CONGESTION")
             else:
@@ -140,53 +136,68 @@ with tabs[0]:
 # ==================================================
 # 📝 MODULE 2: COMPLAINT CLASSIFICATION
 # ==================================================
-with tabs[1]:
+with tab2:
     st.subheader("📝 Citizen Complaint Classification")
 
     st.markdown(
-        "Automatically categorize citizen complaints using **BiLSTM-based NLP model**."
+        "Classify citizen complaints using a **BiLSTM-based NLP model**."
     )
 
     complaint_text = st.text_area(
         "Enter complaint text",
-        placeholder="Example: There are frequent power cuts in my locality at night."
+        placeholder="Example: Frequent power cuts in my area during night hours."
     )
 
     if st.button("🔍 Classify Complaint"):
         if complaint_text.strip():
             try:
                 category = predict_complaint(complaint_text)
-                st.success(f"📌 Predicted Complaint Category: **{category}**")
+                st.success(f"📌 Predicted Category: **{category}**")
             except Exception as e:
                 st.error("Complaint classification failed")
                 st.exception(e)
         else:
-            st.warning("Please enter a complaint before submitting")
+            st.warning("Please enter a complaint")
 
 # ==================================================
 # ⚡ MODULE 3: ENERGY FORECASTING
 # ==================================================
-with tabs[2]:
+with tab3:
     st.subheader("⚡ Energy Consumption Forecasting")
-
-    st.markdown(
-        "Visualization of **Actual vs Predicted** energy consumption using LSTM."
-    )
 
     energy_csv = os.path.join(DATA_DIR, "energy_sample.csv")
 
     try:
         df = pd.read_csv(energy_csv)
 
+        col1, col2, col3 = st.columns(3)
+        mae = abs(df["Actual Energy"] - df["Predicted Energy"]).mean()
+
+        col1.metric("📉 Mean Absolute Error", f"{mae:.4f}")
+        col2.metric("⚡ Peak Consumption", f"{df['Actual Energy'].max():.2f}")
+        col3.metric("📊 Average Consumption", f"{df['Actual Energy'].mean():.2f}")
+
+        st.markdown("### 📈 Actual vs Predicted Energy")
+
         fig, ax = plt.subplots(figsize=(12, 4))
-        ax.plot(df["Actual Energy"], label="Actual Energy", linewidth=2)
-        ax.plot(df["Predicted Energy"], label="Predicted Energy", linestyle="--")
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Energy Consumption")
+        ax.plot(df["Actual Energy"], label="Actual", linewidth=2)
+        ax.plot(df["Predicted Energy"], label="Predicted", linestyle="--")
         ax.legend()
         ax.grid(alpha=0.3)
-
         st.pyplot(fig)
+
+        st.markdown("### 📉 Prediction Error Over Time")
+
+        fig2, ax2 = plt.subplots(figsize=(12, 3))
+        ax2.plot(abs(df["Actual Energy"] - df["Predicted Energy"]), color="red")
+        ax2.set_ylabel("Absolute Error")
+        ax2.grid(alpha=0.3)
+        st.pyplot(fig2)
+
+        if mae < 0.01:
+            st.success("✅ Energy forecast is highly accurate")
+        else:
+            st.warning("⚠️ Forecast deviation detected")
 
     except Exception as e:
         st.error("Energy forecasting data not available")
