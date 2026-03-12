@@ -1,14 +1,7 @@
 import os
-
-# --------------------------------------------------
-# Fix OpenCV + Streamlit Cloud issue
-# --------------------------------------------------
-os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
-
-from ultralytics import YOLO
 from collections import Counter
 from PIL import Image
-import numpy as np
+from ultralytics import YOLO
 
 # --------------------------------------------------
 # Resolve model path
@@ -19,8 +12,9 @@ MODEL_PATH = os.path.join(BASE_DIR, "models", "yolov8_best.pt")
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"YOLO model not found at {MODEL_PATH}")
 
-# Load model
+# Load YOLO model
 model = YOLO(MODEL_PATH)
+
 
 # --------------------------------------------------
 # Traffic Detection
