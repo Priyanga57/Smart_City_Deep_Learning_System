@@ -2,9 +2,9 @@ streamlit
 ultralytics
 tensorflow
 keras
-numpy
+numpy<2
 pandas
 matplotlib
 scikit-learn
 Pillow
-opencv-python-headless==4.9.0.80
+opencv-python-headless
