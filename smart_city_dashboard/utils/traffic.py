@@ -1,8 +1,7 @@
 import os
-import cv2
 from ultralytics import YOLO
 from collections import Counter
-import tempfile
+from PIL import Image
 
 # --------------------------------------------------
 # Resolve absolute path to model
@@ -13,23 +12,25 @@ MODEL_PATH = os.path.join(BASE_DIR, "models", "yolov8_best.pt")
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"YOLO model not found at {MODEL_PATH}")
 
+# Load YOLO model
 model = YOLO(MODEL_PATH)
 
 # --------------------------------------------------
 # Traffic Detection Function
 # --------------------------------------------------
 def detect_traffic(image_path):
-    # Force correct extension for YOLO
-    temp_img = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
-    img = cv2.imread(image_path)
-    cv2.imwrite(temp_img.name, img)
 
+    # Open image using PIL instead of OpenCV
+    img = Image.open(image_path)
+
+    # Run YOLO detection
     results = model.predict(
-        source=temp_img.name,
+        source=img,
         conf=0.4,
         device="cpu"
     )[0]
 
+    # Count detected vehicles
     counts = Counter()
     for box in results.boxes:
         cls = int(box.cls[0])
@@ -38,6 +39,7 @@ def detect_traffic(image_path):
 
     total = sum(counts.values())
 
+    # Traffic congestion logic
     if total > 25:
         congestion = "High"
     elif total > 10:
@@ -45,6 +47,7 @@ def detect_traffic(image_path):
     else:
         congestion = "Low"
 
+    # Annotated output image
     annotated = results.plot()
 
     return dict(counts), total, congestion, annotated
