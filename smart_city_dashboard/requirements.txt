@@ -5,7 +5,6 @@ keras
 numpy
 pandas
 matplotlib
-opencv-python-headless
 scikit-learn
-pickle-mixin
 Pillow
+opencv-python-headless
